@@ -13,41 +13,27 @@ import org.apache.spark._
   * Created by piotr on 02/07/17.
   */
 
-object Praedicates{
-//  @transient var sc: SparkContext = _
-//  @transient var sqlContext: SQLContext = _
-
+object Praedicates {
+  //  @transient var sc: SparkContext = _
+  //  @transient var sqlContext: SQLContext = _
 
 
   def main(args: Array[String]) {
-    val logFile = "/Users/piotr/Development/spark-1.6.1-bin-hadoop2.4/README.md" // Should be some file on your system
+    //    val logFile = "/Users/piotr/Development/spark-1.6.1-bin-hadoop2.4/README.md" // Should be some file on your system
     val conf = new SparkConf().setAppName("Simple Application").setMaster("local[*]")
     val sc = new SparkContext(conf)
-    val logData = sc.textFile(logFile, 2).cache()
-    val numAs = logData.filter(line => line.contains("a")).count()
-    val numBs = logData.filter(line => line.contains("b")).count()
-    println("Lines with a: %s, Lines with b: %s".format(numAs, numBs))
+    //    val logData = sc.textFile(logFile, 2).cache()
+    ////    val numAs = logData.filter(line => line.contains("a")).count()
+    ////    val numBs = logData.filter(line => line.contains("b")).count()
+    //    println("Lines with a: %s, Lines with b: %s".format(numAs, numBs))
+
+    val sqlContext: SQLContext = SQLContext.getOrCreate(sc)
+
+    val text = "If you’re like me when I was a kid, you might be disappointed to find that the lions and tigers don’t fight"
+    val df = sqlContext.createDataFrame(Seq((0, text))).toDF("id", "input")
+    val actual = df.select(ssplit(col("input"))).first().get(0)
+    println("=================================================================")
+    println(actual)
+    println("=================================================================")
   }
-
-//  val sc: SparkContext  = SparkContext.getOrCreate(
-//    new SparkConf()
-//      .setMaster("local[2]")
-//      .setAppName(this.getClass.getSimpleName))
-//
-//  val sqlContext : SQLContext = SQLContext.getOrCreate(sc)
-//
-//  def main(args: Array[String]): Unit = {
-//    println("Hello, world!")
-//    println("Hello, world!")
-//  }
-
 }
-
-//class Main
-//
-//val text ="If you’re like me when I was a kid, you might be disappointed to find that the lions and tigers don’t fight"
-//val df = sqlContext.createDataFrame(Seq((0, text))).toDF("id", "input")
-//val actual = df.select(ssplit(col("input"))).first().get(0)
-//println("=================================================================")
-//println(actual)
-//println("=================================================================")
